@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-import styled from 'styled-components'
-/* import Post from './components/Mensagem/Mensagem'; */
+import styled from 'styled-components';
+
 
 const Container = styled.div`
-  width: min(50%, 700px);
+  width: min(65%, 700px);
   height: 80vh;
   padding: 10px;
   display: flex;
@@ -15,6 +15,11 @@ const Container = styled.div`
   border-radius: 5px;
   border: 2px solid #DEE2E6;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+
+  @media screen and (max-width: 500px) {
+    width: min(50%, 500px);
+    font-size: 0.7em;
+  }
 `
 
 const MessageBox = styled.div`
@@ -100,6 +105,15 @@ const MessageBubble = styled.div`
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
+  position: relative;
+    &:after {    /////////ADICIONA A PONTINHA DO BALÃO DE CONVERSA
+      content: '';
+      border: 15px solid transparent;
+      border-top-color: #dee2e6;
+      position: absolute;
+      top: 0px;
+      right: -8px;  
+    }
 
   @media screen and (max-width: 500px) {
     font-size: 0.7em;
@@ -132,27 +146,32 @@ class App extends React.Component {
 
   state= {
     mensagem: [
-      {
+     /*  {
       nomeUsuario: "",
       mensagemUsuario: "",
-    }
+    } */ //COMENTEI ESTE CAMPO PARA NÃO EXIBIR O BALÃO VAZIO SOMENTE COM A HORA
     ],
     valorNomeUsuario: "",
     valorMensagemUsuario: "",
   }
 
   adicionaMensagem = () => {
-    const novaMensagem = {
-      nomeUsuario: this.state.valorNomeUsuario,
-      mensagemUsuario: this.state.valorMensagemUsuario,
-    };
-    const novasMensagens = [...this.state.mensagem, novaMensagem];
-    this.setState({ mensagem: novasMensagens });
-    this.setState({valorMensagemUsuario: ''})
+    this.setState({valorNomeUsuario: ""}); ////LIMPA O CAMPO INPUT APÓS CLICAR EM ENVIAR!
+    this.setState({valorMensagemUsuario: ""});
+    const novasMensagens = [
+      ...this.state.mensagem, 
+      {
+        nomeUsuario: this.state.valorNomeUsuario,
+        mensagemUsuario: this.state.valorMensagemUsuario,
+      }
+  ];
+   this.setState ({
+    mensagem: novasMensagens
+    });
   };
 
   onChangeInputNomeUsuario = (event) => {
-    this.setState({ valorNomeUsuario: event.target.value });
+    this.setState({valorNomeUsuario: event.target.value});
   };
 
   onChangeInputMensagemUsuario = (event) => {
@@ -160,6 +179,7 @@ class App extends React.Component {
   };
 
   render() {
+    
     const listaDeMensagens = this.state.mensagem.map((mensagens, i) => {
       return (
         <MessageBubble key={i}>
@@ -171,9 +191,10 @@ class App extends React.Component {
     });
       return (
         <Container>
-          <MessageBox>
-            {listaDeMensagens}
-          </MessageBox>
+          <h1>WhatsLab!</h1>
+            <MessageBox> 
+                {listaDeMensagens}
+            </MessageBox>
           <InputBox>
               <InputName
                 value={this.state.valorNomeUsuario}
